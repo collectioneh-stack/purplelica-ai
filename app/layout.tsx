@@ -6,8 +6,10 @@ import { Space_Grotesk } from 'next/font/google'
 import { Analytics, AnalyticsConfig } from 'pliny/analytics'
 import { SearchProvider, SearchConfig } from 'pliny/search'
 import Header from '@/components/Header'
+import TopAd from '@/components/TopAd'
 import SectionContainer from '@/components/SectionContainer'
 import Footer from '@/components/Footer'
+import FamilyFooter from '@/components/FamilyFooter'
 import siteMetadata from '@/data/siteMetadata'
 import { ThemeProviders } from './theme-providers'
 import { Metadata } from 'next'
@@ -91,6 +93,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         color="#5bbad5"
       />
       <meta name="msapplication-TileColor" content="#000000" />
+      <meta name="naver-site-verification" content="4f5763f4c6bfba05b3f7c7f72927268d3ab6f4fc" />
+      <script
+        defer
+        src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "3bec379dd1ff48c3993aad93f7080fef"}'
+      />
       <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fff" />
       <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000" />
       <link rel="alternate" type="application/rss+xml" href={`${basePath}/feed.xml`} />
@@ -104,10 +112,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Analytics analyticsConfig={siteMetadata.analytics as AnalyticsConfig} />
           <SectionContainer>
             <SearchProvider searchConfig={siteMetadata.search as SearchConfig}>
+              <TopAd />
               <Header />
               <main className="mb-auto">{children}</main>
             </SearchProvider>
             <Footer />
+            <FamilyFooter />
           </SectionContainer>
         </ThemeProviders>
       </body>
