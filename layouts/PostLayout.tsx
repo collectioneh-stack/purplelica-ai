@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 import { CoreContent } from 'pliny/utils/contentlayer'
-import type { Blog, Authors } from 'contentlayer/generated'
+import { allBlogs, type Blog, type Authors } from 'contentlayer/generated'
 import Comments from '@/components/Comments'
 import Link from '@/components/Link'
 import PageTitle from '@/components/PageTitle'
@@ -107,6 +107,35 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
             <div className="divide-y divide-gray-200 xl:col-span-3 xl:row-span-2 xl:pb-0 dark:divide-gray-700">
               <div className="prose dark:prose-invert max-w-none pt-10 pb-8">{children}</div>
               <InArticleAd />
+              {(() => {
+                // 내부링크: 태그 겹침 우선 + 최신순 관련글 3개
+                const mine = new Set(tags || [])
+                const rel = allBlogs
+                  .filter((b) => b.slug !== slug && !b.draft)
+                  .map((b) => ({
+                    b,
+                    score: (b.tags || []).reduce((n, t) => n + (mine.has(t) ? 1 : 0), 0),
+                  }))
+                  .sort((x, y) => y.score - x.score || (y.b.date < x.b.date ? -1 : 1))
+                  .slice(0, 3)
+                if (!rel.length) return null
+                return (
+                  <div className="border-t border-gray-200 pt-6 pb-2 dark:border-gray-700">
+                    <div className="mb-2 font-bold text-gray-900 dark:text-gray-100">
+                      📖 함께 보면 좋은 글
+                    </div>
+                    {rel.map(({ b }) => (
+                      <Link
+                        key={b.slug}
+                        href={`/blog/${b.slug}`}
+                        className="text-primary-500 hover:text-primary-600 block py-1.5"
+                      >
+                        {b.title}
+                      </Link>
+                    ))}
+                  </div>
+                )
+              })()}
               <LeadMagnet />
               {siteMetadata.comments && (
                 <div
